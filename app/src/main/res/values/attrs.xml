@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="DialScrollView">
+        <attr name="listView" format="reference" />
+        <attr name="textView" format="reference" />
+    </declare-styleable>
+</resources>
