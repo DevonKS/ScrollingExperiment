@@ -4,10 +4,12 @@ import android.content.Context;
 import android.os.Environment;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -64,20 +66,34 @@ public class ExperimentData {
         writeFile(context, "data.csv", oldData + data);
     }
 
+    private static void writeFile(Context context, String filename, String data) {
+        File file = new File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_RINGTONES), filename);
+        FileOutputStream outputStream;
+
+        try {
+            outputStream = new FileOutputStream(file);
+            outputStream.write(data.getBytes());
+            outputStream.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private static String readFile(Context context, String filename) {
         String ret = "";
 
         try {
-            File sdCard = Environment.getExternalStorageDirectory();
-            File dir = new File (sdCard.getAbsolutePath() + "/ExperimentResults");
-            dir.mkdirs();
-            File file = new File(dir, "data.csv");
+            File file = new File(Environment.getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_RINGTONES), filename);
 
             InputStream inputStream = new FileInputStream(file);
 
             InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
             BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-            String receiveString = "";
+            String receiveString;
             StringBuilder stringBuilder = new StringBuilder();
 
             while ( (receiveString = bufferedReader.readLine()) != null ) {
@@ -95,21 +111,41 @@ public class ExperimentData {
 
         return ret;
     }
-
-    private static void writeFile(Context context, String filename, String data) {
-        try {
-            File sdCard = Environment.getExternalStorageDirectory();
-            File dir = new File (sdCard.getAbsolutePath() + "/ExperimentResults");
-            dir.mkdirs();
-            File file = new File(dir, "data.csv");
-
-
-            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(new FileOutputStream(file));
-            outputStreamWriter.write(data);
-            outputStreamWriter.close();
-        }
-        catch (IOException e) {
-            System.out.println("File write failed: " + e.toString());
-        }
-    }
+//
+//    private static void writeFile(Context context, String filename, String data) {
+//        try {
+//            File sdCard = Environment.getExternalStorageDirectory();
+//            File file = new File (sdCard.getAbsolutePath() + "/ExperimentResults/data.csv");
+//
+//            if (!file.exists()) {
+//                file.createNewFile();
+//            }
+//
+//            BufferedWriter out = new BufferedWriter(new FileWriter(file.getAbsolutePath(), false));
+//            out.write(data);
+//            out.close();
+//        }
+//        catch (IOException e) {
+//            System.out.println("File write failed: " + e.toString());
+//        }
+//    }
+//
+//    /* Checks if external storage is available for read and write */
+//    public boolean isExternalStorageWritable() {
+//        String state = Environment.getExternalStorageState();
+//        if (Environment.MEDIA_MOUNTED.equals(state)) {
+//            return true;
+//        }
+//        return false;
+//    }
+//
+//    /* Checks if external storage is available to at least read */
+//    public boolean isExternalStorageReadable() {
+//        String state = Environment.getExternalStorageState();
+//        if (Environment.MEDIA_MOUNTED.equals(state) ||
+//                Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
+//            return true;
+//        }
+//        return false;
+//    }
 }
