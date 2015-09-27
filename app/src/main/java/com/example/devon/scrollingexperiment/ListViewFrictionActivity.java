@@ -71,7 +71,7 @@ public class ListViewFrictionActivity extends Activity {
                             System.out.println("Duration: " + duration);
                             Trial currentTrial = ExperimentData.getCurrentTrial();
                             currentTrial.setDuration(duration);
-                            ExperimentData.log(ListViewFrictionActivity.this);
+                            ExperimentData.log();
 
 
                             Trial next = ExperimentData.getNextTrial();

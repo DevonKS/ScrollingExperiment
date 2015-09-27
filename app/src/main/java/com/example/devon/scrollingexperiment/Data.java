@@ -8,7 +8,7 @@ import java.util.List;
  */
 public class Data {
 
-    public static int currentSubjectId = 1;
+    public static int currentSubjectId = 0;
 
     public static int getNextSubjectId() {
         int nextSubjectId = currentSubjectId;

@@ -76,7 +76,7 @@ public class ListViewNoFrictionActivity extends Activity {
                             System.out.println("Duration: " + duration);
                             Trial currentTrial = ExperimentData.getCurrentTrial();
                             currentTrial.setDuration(duration);
-                            ExperimentData.log(ListViewNoFrictionActivity.this);
+                            ExperimentData.log();
 
                             Trial next = ExperimentData.getNextTrial();
                             Intent i;

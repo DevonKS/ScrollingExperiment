@@ -77,7 +77,7 @@ public class DialActivity extends Activity {
                             System.out.println("Duration: " + duration);
                             Trial currentTrial = ExperimentData.getCurrentTrial();
                             currentTrial.setDuration(duration);
-                            ExperimentData.log(DialActivity.this);
+                            ExperimentData.log();
 
                             Trial next = ExperimentData.getNextTrial();
                             Intent i;

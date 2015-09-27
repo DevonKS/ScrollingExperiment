@@ -25,11 +25,55 @@ public class ExperimentData {
     private static int subjectId = -1;
     private static List<Trial> trials = new ArrayList<Trial>();
     private static Trial currentTrial;
+    private static List<Trial> orderOfTrials = new ArrayList<Trial>();
 
     public static void setupTrials() {
-        trials.add(new Trial(subjectId, ListViewFrictionActivity.class, 50));
-        trials.add(new Trial(subjectId, ListViewNoFrictionActivity.class, 50));
-        trials.add(new Trial(subjectId, DialActivity.class, 50));
+        orderOfTrials.add(new Trial(subjectId, ListViewFrictionActivity.class, 50));
+        orderOfTrials.add(new Trial(subjectId, ListViewFrictionActivity.class, 100));
+        orderOfTrials.add(new Trial(subjectId, ListViewFrictionActivity.class, 500));
+        orderOfTrials.add(new Trial(subjectId, ListViewNoFrictionActivity.class, 50));
+        orderOfTrials.add(new Trial(subjectId, ListViewNoFrictionActivity.class, 100));
+        orderOfTrials.add(new Trial(subjectId, ListViewNoFrictionActivity.class, 500));
+        orderOfTrials.add(new Trial(subjectId, DialActivity.class, 50));
+        orderOfTrials.add(new Trial(subjectId, DialActivity.class, 100));
+        orderOfTrials.add(new Trial(subjectId, DialActivity.class, 500));
+
+
+
+
+        int lowerIndex = subjectId%orderOfTrials.size();
+        trials.add(orderOfTrials.get(lowerIndex));
+        lowerIndex += 1;
+        int upperIndex = orderOfTrials.size() - 1;
+        boolean upper = false;
+
+        for (int i = 0; i < orderOfTrials.size() - 1; i += 1) {
+            if (upper) {
+                trials.add(orderOfTrials.get(upperIndex));
+                upperIndex -= 1;
+                upper = false;
+            } else {
+                trials.add(orderOfTrials.get(lowerIndex));
+                lowerIndex += 1;
+                upper = true;
+            }
+        }
+
+//        n1, n2, n-1, n3, n-2, n4, n-3, n5, n-4
+//
+//        1 2 9 3 8 4 7 5 6
+//        2 3 1 4 9 5 8 6 7
+//        3 4 2 5 1 6 9 7 8
+//        4 5 3 6 2 7 1 8 9
+//        5 6 4 7 3 8 2 9 1
+//        6 7 5 8 4 9 3 1 2
+//        7 8 6 9 5 1 4 2 3
+//        8 9 7 1 6 2 5 3 4
+//        9 1 8 2 7 3 6 4 5
+//        6 5 7 4 8 3 9 2 1
+//        7 6 8 5 9 4 1 3 2
+//        8 7 9 6 1 5 2 4 3
+//        9 8 1 7 2 6 3 5 4
     }
 
     public static int getSubjectId() {
@@ -55,18 +99,28 @@ public class ExperimentData {
         return next;
     }
 
-    public static void log(Context context) {
+    public static void log() {
         int subjectId = currentTrial.getSubjectId();
         Class activity = currentTrial.getActivity();
         int distance = currentTrial.getDistance();
         double duration = currentTrial.getDuration();
-        String data = subjectId + "," + activity + "," + distance + "," + duration + "\n";
 
-        String oldData = readFile(context, "data.csv");
-        writeFile(context, "data.csv", oldData + data);
+        String activityString;
+        if (activity == ListViewFrictionActivity.class) {
+            activityString = "Standard Scrolling With Friction";
+        } else if (activity == ListViewNoFrictionActivity.class) {
+            activityString = "Standard Scrolling Without Friction";
+        }
+        else {
+            activityString = "Chrial Scrolling";
+        }
+        String data = subjectId + "," + activityString + "," + distance + "," + duration + "\n";
+
+        String oldData = readFile("data.csv");
+        writeFile("data.csv", oldData + data);
     }
 
-    private static void writeFile(Context context, String filename, String data) {
+    private static void writeFile(String filename, String data) {
         File file = new File(Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_RINGTONES), filename);
         FileOutputStream outputStream;
@@ -82,7 +136,7 @@ public class ExperimentData {
         }
     }
 
-    private static String readFile(Context context, String filename) {
+    private static String readFile(String filename) {
         String ret = "";
 
         try {
